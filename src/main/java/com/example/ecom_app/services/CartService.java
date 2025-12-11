@@ -53,9 +53,6 @@ public class CartService {
         String cartId = customer.getCartId();
         Cart cart = cartRepo.getReferenceById(cartId);
 
-        InventoryItem inventoryItem = inventoryRepo.getReferenceById(inventoryItemId);
-        inventoryItem.setAvailableQty(inventoryItem.getAvailableQty() - reqQty);
-
         CartItem cartItem = createCartItem(inventoryItemId, reqQty);
 
         cart.getCartItemIds().add(cartItem.getItemId());

@@ -4,10 +4,7 @@ import com.example.ecom_app.models.*;
 import com.example.ecom_app.repos.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -16,6 +13,7 @@ public class OrderService {
     private CustomerRepo customerRepo;
     private CartItemRepo cartItemRepo;
     private OrderItemRepo orderItemRepo;
+    private InventoryRepo inventoryRepo;
     private CartService cartService;
 
     public OrderService(OrderRepo orderRepo,
@@ -38,6 +36,16 @@ public class OrderService {
         Cart cart = cartRepo.getReferenceById(cartId);
         List<CartItem> cartItems = cartService.getCartItems(customerId);
 
+        List<InventoryItem> inventoryItemList = new ArrayList<>();
+        cartItems.forEach(cartItem -> {
+            String inventoryItemId = cartItem.getInventoryItemId();
+            Integer reqQty = cartItem.getQty();
+            InventoryItem inventoryItem = inventoryRepo.getReferenceById(inventoryItemId);
+            inventoryItem.setAvailableQty(inventoryItem.getAvailableQty() - reqQty);
+            inventoryItemList.add(inventoryItem);
+        });
+        inventoryRepo.saveAll(inventoryItemList);
+
         List<OrderItem> orderItems = cartItems
                 .stream()
                 .filter(Objects::nonNull)
@@ -53,9 +61,12 @@ public class OrderService {
     }
 
     private void clearCart(Cart cart) {
+        // Delete cart item objects
+        cartItemRepo.deleteAllById(cart.getCartItemIds());
+
+        // Clear cart
         cart.getCartItemIds().clear();
         cartRepo.save(cart);
-        cartItemRepo.deleteAllById(cart.getCartItemIds());
     }
 
     private static OrderItem cartItemToOrderItem(CartItem cartItem) {
