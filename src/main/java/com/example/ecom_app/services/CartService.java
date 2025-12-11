@@ -12,6 +12,7 @@ import com.example.ecom_app.repos.InventoryRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -38,6 +39,7 @@ public class CartService {
         List<String> cartItemIds = cart.getCartItemIds();
         return cartItemIds
                 .stream()
+                .filter(Objects::nonNull)
                 .map(cartItemId -> cartItemRepo.getReferenceById(cartItemId))
                 .toList();
     }
@@ -54,16 +56,21 @@ public class CartService {
         InventoryItem inventoryItem = inventoryRepo.getReferenceById(inventoryItemId);
         inventoryItem.setAvailableQty(inventoryItem.getAvailableQty() - reqQty);
 
-        CartItem cartItem = new CartItem();
-        cartItem.setItemId(UUID.randomUUID().toString());
-        cartItem.setInventoryItemId(inventoryItemId);
-        cartItem.setQty(reqQty);
+        CartItem cartItem = createCartItem(inventoryItemId, reqQty);
 
         cart.getCartItemIds().add(cartItem.getItemId());
 
         cartItemRepo.save(cartItem);
         cartRepo.save(cart);
 
+        return cartItem;
+    }
+
+    private static CartItem createCartItem(String inventoryItemId, Integer reqQty) {
+        CartItem cartItem = new CartItem();
+        cartItem.setItemId(UUID.randomUUID().toString());
+        cartItem.setInventoryItemId(inventoryItemId);
+        cartItem.setQty(reqQty);
         return cartItem;
     }
 }

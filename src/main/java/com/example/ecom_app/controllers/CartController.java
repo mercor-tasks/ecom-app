@@ -16,10 +16,10 @@ public class CartController {
     }
 
     /**
-     * Should validate if customerId is not null/empty (referenced from readme)
-     * Should validate if customer is present in the database
-     * Should validate if cartId is not null for the customer
-     * Should validate if cart is present for the cartId
+     * Should validate if customerId is not null/empty (referenced from readme) [else return 400]
+     * Should validate if customer is present in the database [else return 400]
+     * Should validate if cartId is not null for the customer [else return 404]
+     * Should validate if cart is present for the cartId [else return 404]
      * @param customerId
      * @return
      */
@@ -29,13 +29,13 @@ public class CartController {
     }
 
     /**
-     * Should validate if inventoryItemId is not null/empty (referenced from readme)
-     * Should validate if qty is not null/empty and valid integer (referenced from readme)
-     * Should validate if customer is present in the database
-     * Should validate if cartId is not null for the customer
-     * Should validate if cart is present for the cartId, if not create a new one
-     * Validate if inventoryItem is present for inventoryItemId
-     * Validate if inventoryItem has enough qty available
+     * Should validate if inventoryItemId is not null/empty (referenced from readme) [else return 400]
+     * Should validate if qty is not null/empty and valid integer (referenced from readme) [else return 400]
+     * Should validate if customer is present in the database [else return 400]
+     * Should validate if cartId is not null for the customer [else return 500, as this is a server error that happened earlier during customer account creation, needs manual intervention]
+     * Should validate if cart is present for the cartId [else return 500, as this is a server error that happened earlier during customer account creation, needs manual intervention]
+     * Validate if inventoryItem is present for inventoryItemId [else return 400]
+     * Validate if inventoryItem has enough qty available [else return 400]
      * If cart already has the same item, it should add to the qty
      */
     @PostMapping("/add-item-to-cart")

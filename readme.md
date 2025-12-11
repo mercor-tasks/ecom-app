@@ -9,3 +9,6 @@ So an order amount = sum of the items amount based on the qty.
 #### Other Details
 
 All the provided ids which are `String` are UUIDs. So empty values are not allowed. The validations must include empty check. UUID check is not required.
+
+- A cart is created for a customer when the customer account is created, so there'll always be a cart associated with the cart. In case of failure scenarios, it's possible that cartId is empty for the corresponding customer.
+- 
